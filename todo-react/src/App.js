@@ -29,20 +29,30 @@ function App(props) {
   const deleteTask = id => {
     const remainingTasks = tasks.filter(task => id !== task.id);
     setTasks(remainingTasks);
-  };
+  }
 
-  // Feed Todo components all tasks
+  const editTask = (id, newName) => {
+    const editedTasks = tasks.map(task => {
+      if (id === task.id) {
+        return {...task, name: newName}
+      }
+      return task;
+    });
+    setTasks(editedTasks);
+  }
+
+  // Feed Todo components all tasks and functions
   const taskList = tasks.map(task => (
-      <Todo 
-        id={task.id} 
-        name={task.name} 
-        completed={task.completed}
-        key={task.id} 
-        toggleTaskCompleted={toggleTaskCompleted}
-        deleteTask={deleteTask}
-      />
-    )
-  );
+    <Todo 
+      id={task.id} 
+      name={task.name} 
+      completed={task.completed}
+      key={task.id} 
+      toggleTaskCompleted={toggleTaskCompleted}
+      deleteTask={deleteTask}
+      editTask={editTask}
+    />
+  ));
 
   // Tasks Remaining Header string
   const tasksNoun = taskList.length > 1? 'Tasks' : 'Task';
@@ -59,7 +69,6 @@ function App(props) {
       </div>
       <h2 id="list-heading">{headingText}</h2>
       <ul
-        role="list"
         className="todo-list stack-large stack-exception"
         aria-labelledby="list-heading"
       >
