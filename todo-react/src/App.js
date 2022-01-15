@@ -4,9 +4,19 @@ import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 
+const FILTER_MAP = {
+  All: () => true,
+  Active: task => !task.completed,
+  Completed: task => task.completed
+};
+
+// array of the filter names (keys) from FILTER_MAP
+const FILTER_NAMES = Object.keys(FILTER_MAP);
+
 function App(props) {
-  // Hook to modify tasks
+  // Hooks
   const [tasks, setTasks] = useState(props.tasks);
+  const [filter, setFilter] = useState('All');
 
   // Add a new task
   const addTask = name => {
@@ -41,8 +51,11 @@ function App(props) {
     setTasks(editedTasks);
   }
 
-  // Feed Todo components all tasks and functions
-  const taskList = tasks.map(task => (
+  // Map a list of Todo components with all data and function props
+  // These are filtered based on the filter state (arrow functions populated from FILTER_MAP object)
+  const taskList = tasks
+  .filter(FILTER_MAP[filter])
+  .map(task => (
     <Todo 
       id={task.id} 
       name={task.name} 
@@ -54,6 +67,16 @@ function App(props) {
     />
   ));
 
+  // Map a list of FilterButton components with all data and function props 
+  const filterList = FILTER_NAMES.map(name => (
+    <FilterButton 
+      key={name} 
+      name={name}
+      isPressed={name === filter}
+      setFilter={setFilter}
+    />
+  ))
+
   // Tasks Remaining Header string
   const tasksNoun = taskList.length > 1? 'Tasks' : 'Task';
   const headingText = `${taskList.length} ${tasksNoun} Remaining`;
@@ -63,9 +86,7 @@ function App(props) {
       <h1>To Do List</h1>
       <Form addTask={addTask}/>
       <div className="filters btn-group stack-exception">
-        <FilterButton name="All" pressed={true} />
-        <FilterButton name="Active" pressed={false} />
-        <FilterButton name="Completed" pressed={false} />
+        {filterList}
       </div>
       <h2 id="list-heading">{headingText}</h2>
       <ul
