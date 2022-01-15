@@ -30,3 +30,4 @@ Guide to build derived from: https://developer.mozilla.org/en-US/docs/Learn/Tool
 **5. Editing, filtering, conditional rendering**
 * Condition to change what is rendered from the component return statement
 * edit implementation mirrors the add task form
+* filtering done through states and an object that maps functions to filter names
